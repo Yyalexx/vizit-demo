@@ -140,7 +140,8 @@ PyRect==0.2.0
 pyRFC3339==1.1
 pyrsistent==0.19.3
 PyScreeze==0.1.28
-python-apt==2.0.0+ubuntu0.20.4.8
+#python-apt==2.0.0+ubuntu0.20.4.8
+python-apt==0.7.8
 python-dateutil==2.8.2
 python-debian===0.1.36ubuntu1
 python-xapp==2.0.1
