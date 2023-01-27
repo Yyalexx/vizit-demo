@@ -125,7 +125,7 @@ pycups==1.9.73
 pydeck==0.8.0
 PyGetWindow==0.0.9
 Pygments==2.13.0
-PyGObject==3.36.0
+#PyGObject==3.36.0
 PyICU==2.4.2
 pyinotify==0.9.6
 PyJWT==1.7.1
