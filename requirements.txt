@@ -145,7 +145,7 @@ PyScreeze==0.1.28
 python-dateutil==2.8.2
 #python-debian===0.1.36ubuntu1
 python-debian==0.1.36
-python-xapp==2.0.1
+#python-xapp==2.0.1
 python-xlib==0.23
 python3-xlib==0.15
 pytweening==1.0.4
