@@ -27,7 +27,7 @@ predict_df = pd.DataFrame(columns=col_list)
 predict_df = pd.DataFrame(columns=['Класс','Количество'])
 
 original_image = Image.open(input_image_path)
-resized_image = original_image.resize((640, 640), Image.BILINEAR)
+resized_image = original_image.resize((640, 640), Image.LANCZOS)
 try:    
     if hasattr(original_image, '_getexif') or original_image._getexif() is not None:
         orientation = original_image._getexif().get(0x112)
