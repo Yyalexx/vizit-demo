@@ -95,7 +95,7 @@ opencv-python==4.7.0.68
 openpyxl==3.0.10
 opt-einsum==3.3.0
 packaging==22.0
-PAM==0.4.2
+PAM==0.2.0
 pandas==1.4.1
 parso==0.8.3
 patsy==0.5.3
