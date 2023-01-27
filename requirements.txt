@@ -121,7 +121,7 @@ pybind11==2.6.1
 pycairo==1.16.2
 pycrypto==2.6.1
 pycups==1.9.73
-pycurl==7.43.0.2
+#pycurl==7.43.0.2
 pydeck==0.8.0
 PyGetWindow==0.0.9
 Pygments==2.13.0
