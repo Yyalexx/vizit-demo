@@ -26,7 +26,7 @@ cryptography==2.8
 #cupshelpers==1.0
 cycler==0.11.0
 Cython==0.29.32
-dbus-python==1.2.16
+#dbus-python==1.2.16
 debugpy==1.6.4
 decorator==5.1.1
 defer==1.0.4
@@ -120,7 +120,7 @@ pyasn1-modules==0.2.8
 pybind11==2.6.1
 #pycairo==1.16.2
 pycrypto==2.6.1
-pycups==1.9.73
+#pycups==1.9.73
 #pycurl==7.43.0.2
 pydeck==0.8.0
 PyGetWindow==0.0.9
