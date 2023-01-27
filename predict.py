@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageDraw
 import numpy as np
 import torch
 import pandas as pd
@@ -38,13 +38,13 @@ try:
             img = resized_image 
 except:
     img = resized_image
-col1.image(img)
+
 
 model_1 = torch.hub.load('.', 'custom', path='./model_cl_0.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
 model_2 = torch.hub.load('.', 'custom', path='./m_cl_1_2.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
-
+draw = ImageDraw.Draw(img)
 results = model_1(img, size=640) # ЗАГАДКА, без этой строчки неустойчиво
 
 d={}
@@ -55,16 +55,29 @@ for cls in model_1_class_list:
     d[cls] = len(np.where(col_class==cls)[0])
     curr_cl_list = [cls, d[cls]]
     predict_df.loc[len(predict_df.index)] = curr_cl_list
+# Если есть детектированные объекты класса 0
+if len(results.xyxy[0]) != 0:
+    # Наносим рамки на изображение
+    for i in range(len(results.xyxy[0])):
+        draw.rectangle(tuple(results.xyxy[0][i][:4].tolist()), outline=(255, 0, 0), width=2 )
 
 
 results = model_2(img, size=640)
 col_class=results.xyxy[0][:,5]
+color_dict = {0:(0,255,0), 1:(0,0,255)}
+# Если есть детектированные объекты классов 1 и 2
+if len(results.xyxy[0]) != 0:
+    # Наносим рамки на изображение
+    for i in range(len(results.xyxy[0])):
+        curr_cl = int(results.xyxy[0][i].tolist()[-1])
+        curr_lbl = tuple(results.xyxy[0][i].tolist()[:4])
+        draw.rectangle(curr_lbl, outline=color_dict[curr_cl], width=2 )
 
 for cls in model_2_class_list:
     d[cls] = len(np.where(col_class==cls-len(model_1_class_list))[0])
     curr_cl_list = [cls, d[cls]]
     predict_df.loc[len(predict_df.index)] = curr_cl_list
-
+col1.image(img)
 mapper = {0:'Визит классический 0.45', 
           1:'Визит классический ПЭТ', 
           2:'Визит вечерний 0.45'}
