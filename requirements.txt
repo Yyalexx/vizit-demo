@@ -23,7 +23,7 @@ certifi==2019.11.28
 #command-not-found==0.3
 configobj==5.0.6
 cryptography==2.8
-cupshelpers==1.0
+#cupshelpers==1.0
 cycler==0.11.0
 Cython==0.29.32
 dbus-python==1.2.16
