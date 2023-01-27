@@ -40,9 +40,9 @@ except:
     img = resized_image
 col1.image(img)
 
-model_1 = torch.hub.load('./app/vizit-demo/yolov5', 'custom', path='./model_cl_0.pt', 
+model_1 = torch.hub.load('.', 'custom', path='./model_cl_0.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
-model_2 = torch.hub.load('./app/vizit-demo/yolov5', 'custom', path='./m_cl_1_2.pt', 
+model_2 = torch.hub.load('.', 'custom', path='./m_cl_1_2.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
 
 results = model_1(img, size=640) # ЗАГАДКА, без этой строчки неустойчиво
