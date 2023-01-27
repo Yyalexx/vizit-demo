@@ -118,7 +118,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 #PyAutoGUI==0.9.33
 pybind11==2.6.1
-pycairo==1.16.2
+#pycairo==1.16.2
 pycrypto==2.6.1
 pycups==1.9.73
 #pycurl==7.43.0.2
