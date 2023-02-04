@@ -47,6 +47,7 @@ model_2 = torch.hub.load('.', 'custom', path='./m_cl_1_2.pt',
 draw = ImageDraw.Draw(img)
 
 d={}
+esults = model_1(img, size=640)
 results = model_1(img, size=640)
 col_class=results.xyxy[0][:,5]
 
