@@ -45,7 +45,6 @@ model_1 = torch.hub.load('.', 'custom', path='./model_cl_0.pt',
 model_2 = torch.hub.load('.', 'custom', path='./m_cl_1_2.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
 draw = ImageDraw.Draw(img)
-results = model_1(img, size=640) # ЗАГАДКА, без этой строчки неустойчиво
 
 d={}
 results = model_1(img, size=640)
