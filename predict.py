@@ -105,7 +105,7 @@ for m in class_list.keys():   # для каждой модели
     result_df = model(img, size=640).pandas().xyxy[0]
     class_df = result_df.groupby('class').agg('count')['name']
 
-    if len(a) != 0:
+    if len(result_df) != 0:
         # Наносим рамки на изображение
         for i in range(len(result_df)):
             curr_cl = result_df.iloc[i][5]
