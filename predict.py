@@ -102,20 +102,18 @@ d={}
 for m in class_list.keys():   # для каждой модели
     model = models[m]
     results = model(img, size=640)
-    results = model(img, size=640)
-
-    a = results.pandas().xyxy[0]
-    b = a.groupby('class').agg('count')['name']
+    result_df = model(img, size=640).pandas().xyxy[0]
+    class_df = result_df.groupby('class').agg('count')['name']
 
     if len(a) != 0:
         # Наносим рамки на изображение
-        for i in range(len(a)):
-            curr_cl = a.iloc[i][5]
+        for i in range(len(result_df)):
+            curr_cl = result_df.iloc[i][5]
             glob_cl = curr_cl + class_list[m][0] # + смещение
-            curr_lbl = tuple(a.iloc[i].values[:4])
+            curr_lbl = tuple(result_df.iloc[i].values[:4])
             draw.rectangle(curr_lbl, outline=color_dict[glob_cl], width=2 )
-        for cls in list(b.index):
-            d[cls+class_list[m][0]] = b.loc[cls]
+        for cls in list(class_df.index):
+            d[cls+class_list[m][0]] = class_df.loc[cls]
 
 for k in col_list:
     if k in d.keys():
