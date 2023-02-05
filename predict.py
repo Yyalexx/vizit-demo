@@ -84,13 +84,13 @@ else:
     img = resized_image
 
 
-m_1 = torch.hub.load('./yolov5', 'custom', path='./model_cl_0.pt', 
+m_1 = torch.hub.load('.', 'custom', path='./model_cl_0.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
-m_2 = torch.hub.load('./yolov5', 'custom', path='./m_cl_1_2.pt', 
+m_2 = torch.hub.load('.', 'custom', path='./m_cl_1_2.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
-m_3 = torch.hub.load('./yolov5', 'custom', path='./water.pt', 
+m_3 = torch.hub.load('.', 'custom', path='./water.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
-m_4 = torch.hub.load('./yolov5', 'custom', path='./rf.pt', 
+m_4 = torch.hub.load('.', 'custom', path='./rf.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
 models = {0:m_1, 1:m_2, 2:m_3, 3:m_4}
 
