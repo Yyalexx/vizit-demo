@@ -18,17 +18,61 @@ if my_upload is not None:
 else:
     input_image_path = "./1.jpg"
 
-model_1_class_list = [0]
-model_2_class_list = [1,2]
+class_list = {0:[0],
+            1:[1,2],
+            2:[3,4,5,6,7],
+            3:[8,9]
+                    }
+class_dict = {
+        0:'V_cl_0.45',
+        1:'V_cl_1.5',
+        2:'V_vech_0.45',
+        3:'Nad_G_1.5',
+        4:'Nad_G_2.0',
+        5:'Nad_NG_1.5',
+        6:'Nad_NG_2.0',
+        7:'Nad_5.0',
+        8:'V_cl_RF_1.5',
+        9:'V_ZH_RF_1.5'
+}    
+    
+class_list = {0:[0],
+            1:[1,2],
+            2:[3,4,5,6,7],
+            3:[8,9]
+                    }
+class_dict = {
+        0:'V_cl_0.45',
+        1:'V_cl_1.5',
+        2:'V_vech_0.45',
+        3:'Nad_G_1.5',
+        4:'Nad_G_2.0',
+        5:'Nad_NG_1.5',
+        6:'Nad_NG_2.0',
+        7:'Nad_5.0',
+        8:'V_cl_RF_1.5',
+        9:'V_ZH_RF_1.5'
+}    
 
-col_list = model_1_class_list + model_2_class_list
+color_dict = {0:(255,255,255),
+              1:(255,255,0),
+              2:(0,100,200),
+              3:(0,255,255),
+              4:(0,128,128),
+              5:(128,128,255),
+              6:(255,128,255),
+              7:(0,128,255),
+              8:(255,0,128),
+              9:(0,0,0)
+              
+              }
 
-predict_df = pd.DataFrame(columns=col_list)
+col_list = list(class_dict.keys())
 predict_df = pd.DataFrame(columns=['Класс','Количество'])
 
 original_image = Image.open(input_image_path)
 resized_image = original_image.resize((640, 640), Image.LANCZOS)
-    
+
 if hasattr(original_image, '_getexif') or original_image._getexif() is not None:
     orientation = original_image._getexif().get(0x112)
     rotate_values = {3: 180, 6: 270, 8: 90}
@@ -40,47 +84,48 @@ else:
     img = resized_image
 
 
-model_1 = torch.hub.load('.', 'custom', path='./model_cl_0.pt', 
+m_1 = torch.hub.load('./yolov5', 'custom', path='./model_cl_0.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
-model_2 = torch.hub.load('.', 'custom', path='./m_cl_1_2.pt', 
+m_2 = torch.hub.load('./yolov5', 'custom', path='./m_cl_1_2.pt', 
             source='local', device='cpu', force_reload=True, _verbose=False)
+m_3 = torch.hub.load('./yolov5', 'custom', path='./water.pt', 
+            source='local', device='cpu', force_reload=True, _verbose=False)
+m_4 = torch.hub.load('./yolov5', 'custom', path='./rf.pt', 
+            source='local', device='cpu', force_reload=True, _verbose=False)
+models = {0:m_1, 1:m_2, 2:m_3, 3:m_4}
+
+
 draw = ImageDraw.Draw(img)
-
+curr_cl_list = []
 d={}
-esults = model_1(img, size=640)
-results = model_1(img, size=640)
-col_class=results.xyxy[0][:,5]
 
-for cls in model_1_class_list:
-    d[cls] = len(np.where(col_class==cls)[0])
-    curr_cl_list = [cls, d[cls]]
+for m in class_list.keys():   # для каждой модели
+    model = models[m]
+    results = model(img, size=640)
+    results = model(img, size=640)
+
+    a = results.pandas().xyxy[0]
+    b = a.groupby('class').agg('count')['name']
+
+    if len(a) != 0:
+        # Наносим рамки на изображение
+        for i in range(len(a)):
+            curr_cl = a.iloc[i][5]
+            glob_cl = curr_cl + class_list[m][0] # + смещение
+            curr_lbl = tuple(a.iloc[i].values[:4])
+            draw.rectangle(curr_lbl, outline=color_dict[glob_cl], width=2 )
+        for cls in list(b.index):
+            d[cls+class_list[m][0]] = b.loc[cls]
+
+for k in col_list:
+    if k in d.keys():
+        curr_cl_list = [k, d[k]]
+    else:
+        curr_cl_list = [k, 0]
     predict_df.loc[len(predict_df.index)] = curr_cl_list
-# Если есть детектированные объекты класса 0
-if len(results.xyxy[0]) != 0:
-    # Наносим рамки на изображение
-    for i in range(len(results.xyxy[0])):
-        draw.rectangle(tuple(results.xyxy[0][i][:4].tolist()), outline=(255, 0, 0), width=2 )
 
-
-results = model_2(img, size=640)
-col_class=results.xyxy[0][:,5]
-color_dict = {0:(0,255,0), 1:(0,0,255)}
-# Если есть детектированные объекты классов 1 и 2
-if len(results.xyxy[0]) != 0:
-    # Наносим рамки на изображение
-    for i in range(len(results.xyxy[0])):
-        curr_cl = int(results.xyxy[0][i].tolist()[-1])
-        curr_lbl = tuple(results.xyxy[0][i].tolist()[:4])
-        draw.rectangle(curr_lbl, outline=color_dict[curr_cl], width=2 )
-
-for cls in model_2_class_list:
-    d[cls] = len(np.where(col_class==cls-len(model_1_class_list))[0])
-    curr_cl_list = [cls, d[cls]]
-    predict_df.loc[len(predict_df.index)] = curr_cl_list
 col1.image(img)
-mapper = {0:'Визит классический 0.45', 
-          1:'Визит классический ПЭТ', 
-          2:'Визит вечерний 0.45'}
-predict_df['Наименование'] =  predict_df['Класс'].apply(lambda x: mapper[x])
+
+predict_df['Наименование'] =  predict_df['Класс'].apply(lambda x: class_dict[x])
 predict_df.drop(['Класс'], axis=1, inplace=True)
 col2.dataframe(predict_df)
